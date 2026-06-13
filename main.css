@@ -13,18 +13,39 @@ Use of Search Engine Optimization (SEO) principles
 Mobile friendly and/or fluid layout for different screen sizes
 
 */
+
+/* 
+Primary color is the background color
+secondary color is for borders and other stuff
+textcolor is for text.
+ */
+
+ /* TODO: Make @media queries for responsive design for mobile devices and tablets. */
 :root {
     --primary-color: #2e2e2e;
     --secondary-color: #ffffff; 
-   
+    --ouline-striped-color: #383838;
+    --outline-size:3px;
+    --border-radius: 3px;
+   --text-color:#ffffff;
     --checker-color-1: #000000; 
-    --checker-color-2: rgb(17, 106, 38);
+    --checker-color-2: rgb(16, 81, 31);
     --checker-size: 130px;
+    --link-color: #aa1ae8;
+
     /* the checkerboard pattern colors for the PAGE BG*/
 }
-/* checkerboard */
-/* checkerboard */
+h1, h2, h3,p,li {
+    color: var(--text-color);
+}
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+
 html body {
+    
     margin: 0;
     padding: 0;
     background:
@@ -34,6 +55,7 @@ html body {
             var(--checker-color-2) 90deg 180deg
         );
     background-size: var(--checker-size)  var(--checker-size);
+    /* checkerboard pattern. */
 }
 
 /* black box centered with spacing */
@@ -42,11 +64,17 @@ html body {
     background: black;
     min-height: calc(100vh - 80px);
 }
+.logo {
+    display: block;
+    margin: 0 auto;
+    width: 150px;
+  
+}
 
 
-.layout {
+.content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     min-height: 100vh;
     /* everything is inside this includig=ng the side top bottom and whatever other content */
 }
@@ -56,5 +84,66 @@ html body {
     color: var(--secondary-color);
     padding: 20px;
     width: 200px;
-    /* height: 100vh; */
+    height: 78vh;
+    border: var(--outline-size) solid var(--ouline-striped-color);
+    border-radius: var(--border-radius);
+}
+
+/* main content goes to the right of the sidebar */
+.main {
+    flex: .5;
+    background-color: var(--primary-color);
+    height: 78vh;
+    color: var(--primary-color);
+    padding: 20px;
+
+    border: var(--outline-size) solid var(--ouline-striped-color);
+    border-radius: var(--border-radius);
+
+}
+.top {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 20px;
+    
+    height: 10vh;
+    width: 56vw; /*TODO: make the top bar stretch
+     from the left side to the end of the where the .main content ends.
+     (the .side bar is on the left and .main is to the right of while
+     the top is on the far left. (this should fit correctly and automatically.
+    */
+    border: var(--outline-size) solid var(--ouline-striped-color);
+    border-radius: var(--border-radius);
+    
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+.topcontainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; /* centers vertically */
+    overflow: hidden;
+    white-space: nowrap;
+    height: 100%;        /* matches .top height */
+    margin-top: 0;       /* removes misalignment */
+    border: 2px solid var(--ouline-striped-color);
+}
+
+.marq {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--secondary-color);
+    animation: marquee 5s linear infinite;
+  
+    
+}
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+    
+}
+.imgdec {
+   position: fixed;
 }
