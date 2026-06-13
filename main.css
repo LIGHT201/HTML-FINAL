@@ -1,0 +1,60 @@
+/* rules:
+
+Home page and at least 4 content pages (5 pages total)
+A single external CSS file controlling styles across the site (internal and embedded styles may also be used when appropriate)
+Consistent "look and feel" throughout the site (logo, color scheme, layout, navigation)
+Consistent navigation throughout the site
+Use at least three images in addition to a logo (images should have alternate text)
+Include at least three external links
+At least one HTML list (ul, ol, or dl) element
+At least one HTML table element
+At least one HTML form element w/script for processing form data
+Use of Search Engine Optimization (SEO) principles
+Mobile friendly and/or fluid layout for different screen sizes
+
+*/
+:root {
+    --primary-color: #2e2e2e;
+    --secondary-color: #ffffff; 
+   
+    --checker-color-1: #000000; 
+    --checker-color-2: rgb(17, 106, 38);
+    --checker-size: 130px;
+    /* the checkerboard pattern colors for the PAGE BG*/
+}
+/* checkerboard */
+/* checkerboard */
+html body {
+    margin: 0;
+    padding: 0;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            var(--checker-color-1) 0deg 90deg,
+            var(--checker-color-2) 90deg 180deg
+        );
+    background-size: var(--checker-size)  var(--checker-size);
+}
+
+/* black box centered with spacing */
+.wrapper {
+    margin: 40px;
+    background: black;
+    min-height: calc(100vh - 80px);
+}
+
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* everything is inside this includig=ng the side top bottom and whatever other content */
+}
+/* side will be to the left. */
+.side {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 20px;
+    width: 200px;
+    /* height: 100vh; */
+}
