@@ -29,7 +29,7 @@
                             <input type="checkbox" id="dark-mode-setting" class="setting-checkbox">
                             <span>Dark Mode</span>
                         </label>
-                        <p class="setting-description">Use dark theme (enabled by default).</p>
+                        <p class="setting-description">Use dark theme (enabled by default) (Dear god.. why..?).</p>
                     </div>
                 </div>
 
@@ -53,41 +53,56 @@
             </div>
 
             <script>
-                // Initialize settings page
                 document.addEventListener("DOMContentLoaded", () => {
-                    const settings = Settings.getAll();
+                    // Pull current configurations from active session cookies
+                    const scanlinesVal = CookieManager.get('scanlines', 'true') === 'true';
+                    const highContrastVal = CookieManager.get('highContrast', 'false') === 'true';
+                    const darkModeVal = CookieManager.get('darkMode', 'true') === 'true';
+                    const fontSizeVal = CookieManager.get('fontSize', '100');
+
+                    // Bind active interface element states to variables
+                    const scanlinesBox = document.getElementById("scanlines-setting");
+                    const highContrastBox = document.getElementById("high-contrast-setting");
+                    const darkModeBox = document.getElementById("dark-mode-setting");
+                    const fontSizeSlider = document.getElementById("font-size-setting");
+                    const fontSizeLabel = document.getElementById("font-size-value");
+
+                    // Render existing states to UI
+                    scanlinesBox.checked = scanlinesVal;
+                    highContrastBox.checked = highContrastVal;
+                    darkModeBox.checked = darkModeVal;
+                    fontSizeSlider.value = fontSizeVal;
+                    fontSizeLabel.textContent = fontSizeVal + "%";
                     
-                    // Set checkbox states
-                    document.getElementById("scanlines-setting").checked = settings.scanlines;
-                    document.getElementById("high-contrast-setting").checked = settings.highContrast;
-                    document.getElementById("dark-mode-setting").checked = settings.darkMode;
-                    document.getElementById("font-size-setting").value = settings.fontSize;
-                    document.getElementById("font-size-value").textContent = settings.fontSize + "%";
-                    
-                    // Checkbox listeners
-                    document.getElementById("scanlines-setting").addEventListener("change", (e) => {
-                        Settings.set("scanlines", e.target.checked);
+                    // Listeners to update cookies and instantly apply the changes
+                    scanlinesBox.addEventListener("change", (e) => {
+                        CookieManager.set("scanlines", e.target.checked);
+                        applyAccessibilitySettings();
                     });
                     
-                    document.getElementById("high-contrast-setting").addEventListener("change", (e) => {
-                        Settings.set("highContrast", e.target.checked);
+                    highContrastBox.addEventListener("change", (e) => {
+                        CookieManager.set("highContrast", e.target.checked);
+                        applyAccessibilitySettings();
                     });
                     
-                    document.getElementById("dark-mode-setting").addEventListener("change", (e) => {
-                        Settings.set("darkMode", e.target.checked);
+                    darkModeBox.addEventListener("change", (e) => {
+                        CookieManager.set("darkMode", e.target.checked);
+                        applyAccessibilitySettings();
                     });
                     
-                    // Font size slider
-                    document.getElementById("font-size-setting").addEventListener("input", (e) => {
-                        const size = parseInt(e.target.value);
-                        document.getElementById("font-size-value").textContent = size + "%";
-                        Settings.set("fontSize", size);
+                    fontSizeSlider.addEventListener("input", (e) => {
+                        fontSizeLabel.textContent = e.target.value + "%";
+                        CookieManager.set("fontSize", e.target.value);
+                        applyAccessibilitySettings();
                     });
                     
-                    // Reset button
+                    // Clear out variables back to defaults
                     document.getElementById("reset-settings-btn").addEventListener("click", () => {
                         if (confirm("Reset all settings to defaults?")) {
-                            Settings.reset();
+                            CookieManager.delete("scanlines");
+                            CookieManager.delete("highContrast");
+                            CookieManager.delete("darkMode");
+                            CookieManager.delete("fontSize");
                             location.reload();
                         }
                     });
@@ -95,5 +110,3 @@
             </script>
 
 <?php include 'footer.php'; ?>
-
-

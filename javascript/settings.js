@@ -1,90 +1,45 @@
-/**
- * Simple Settings Manager
- * Handles all website settings persistently
- */
-
-const Settings = {
-    // Keys for localStorage
-    STORAGE_KEY: "zombiz_settings",
-    
-    // Default settings
-    DEFAULTS: {
-        scanlines: false,
-        highContrast: false,
-        fontSize: 100,
-        darkMode: true
+// Utility object to handle browser cookies
+const CookieManager = {
+    set(name, value, days = 30) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Strict`;
     },
-
-    // Get all settings
-    getAll() {
-        const saved = localStorage.getItem(this.STORAGE_KEY);
-        return saved ? { ...this.DEFAULTS, ...JSON.parse(saved) } : this.DEFAULTS;
+    get(name, defaultValue) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return defaultValue;
     },
-
-    // Get single setting
-    get(key) {
-        const all = this.getAll();
-        return all[key] !== undefined ? all[key] : this.DEFAULTS[key];
-    },
-
-    // Set single setting
-    set(key, value) {
-        const all = this.getAll();
-        all[key] = value;
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(all));
-        this.apply();
-    },
-
-    // Set multiple settings
-    setMultiple(obj) {
-        const all = this.getAll();
-        Object.assign(all, obj);
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(all));
-        this.apply();
-    },
-
-    // Reset to defaults
-    reset() {
-        localStorage.removeItem(this.STORAGE_KEY);
-        this.apply();
-    },
-
-    // Apply all settings to page
-    apply() {
-        const settings = this.getAll();
-        
-        // Apply scanlines
-        this.applyScanlines(settings.scanlines);
-        
-        // Apply high contrast
-        document.body.classList.toggle("high-contrast", settings.highContrast);
-        
-        // Apply font size
-        document.documentElement.style.fontSize = settings.fontSize + "%";
-        
-        // Apply dark mode
-        document.body.classList.toggle("light-mode", !settings.darkMode);
-    },
-
-    // Handle scanlines separately (remove all, add if needed)
-    applyScanlines(enabled) {
-        // Remove all existing scanlines
-        document.querySelectorAll(".scanlines").forEach(el => el.remove());
-        
-        // Add scanlines if enabled
-        if (enabled) {
-            const overlay = document.createElement("div");
-            overlay.classList.add("scanlines", "flicker-effect");
-            document.body.appendChild(overlay);
-        }
+    delete(name) {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
     }
 };
 
-// Apply settings when page loads
-document.addEventListener("DOMContentLoaded", () => {
-    Settings.apply();
-});
+// Apply saved settings instantly to the active DOM element
+function applyAccessibilitySettings() {
+    const body = document.body;
+    
+    // Read current settings from cookies
+    const scanlines = CookieManager.get('scanlines', 'true') === 'true';
+    const highContrast = CookieManager.get('highContrast', 'false') === 'true';
+    const darkMode = CookieManager.get('darkMode', 'true') === 'true';
+    const fontSize = CookieManager.get('fontSize', '100');
 
-// Also apply on immediate load (before DOM ready) for faster effect
-Settings.apply();
+    // Toggle CSS layout classes based on values
+    const scanlineDiv = document.getElementById('scanlines');
+    if (scanlineDiv) {
+        scanlineDiv.style.display = scanlines ? 'block' : 'none';
+    }
 
+    body.classList.toggle('high-contrast', highContrast);
+    
+    // Toggle light mode if dark mode is explicitly disabled
+    body.classList.toggle('light-mode', !darkMode);
+
+    // Apply fluid structural scaling
+    body.style.fontSize = `${fontSize}%`;
+}
+
+// Automatically execute configurations when structural elements load
+document.addEventListener("DOMContentLoaded", applyAccessibilitySettings);
