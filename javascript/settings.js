@@ -1,45 +1,94 @@
-// Utility object to handle browser cookies
-const CookieManager = {
-    set(name, value, days = 30) {
-        const d = new Date();
-        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Strict`;
+const StorageManager = {
+    set(key, value) {
+        localStorage.setItem(key, value);
     },
-    get(name, defaultValue) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return defaultValue;
+    get(key, fallbackValue) {
+        const value = localStorage.getItem(key);
+        return value !== null ? value : fallbackValue;
     },
-    delete(name) {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+    delete(key) {
+        localStorage.removeItem(key);
     }
 };
 
-// Apply saved settings instantly to the active DOM element
-function applyAccessibilitySettings() {
-    const body = document.body;
-    
-    // Read current settings from cookies
-    const scanlines = CookieManager.get('scanlines', 'true') === 'true';
-    const highContrast = CookieManager.get('highContrast', 'false') === 'true';
-    const darkMode = CookieManager.get('darkMode', 'true') === 'true';
-    const fontSize = CookieManager.get('fontSize', '100');
+function refreshVisualState() {
+    const targetBody = document.body;
 
-    // Toggle CSS layout classes based on values
-    const scanlineDiv = document.getElementById('scanlines');
-    if (scanlineDiv) {
-        scanlineDiv.style.display = scanlines ? 'block' : 'none';
+    const isScanlineActive = StorageManager.get("scanlines", "true") === "true";
+    const isHighContrast = StorageManager.get("highContrast", "false") === "true";
+    const isDarkMode = StorageManager.get("darkMode", "true") === "true";
+    const currentFontSizePercentage = StorageManager.get("fontSize", "100");
+
+    const scanlineOverlay = document.getElementById("scanlines");
+    if (scanlineOverlay) {
+        scanlineOverlay.style.display = isScanlineActive ? "block" : "none";
     }
 
-    body.classList.toggle('high-contrast', highContrast);
-    
-    // Toggle light mode if dark mode is explicitly disabled
-    body.classList.toggle('light-mode', !darkMode);
-
-    // Apply fluid structural scaling
-    body.style.fontSize = `${fontSize}%`;
+    targetBody.classList.toggle("high-contrast", isHighContrast);
+    targetBody.classList.toggle("light-mode", !isDarkMode);
+    targetBody.style.fontSize = `${currentFontSizePercentage}%`;
 }
 
-// Automatically execute configurations when structural elements load
-document.addEventListener("DOMContentLoaded", applyAccessibilitySettings);
+function initSettingsInterface() {
+    const scanlineCheckbox = document.getElementById("scanlines-setting");
+    const contrastCheckbox = document.getElementById("high-contrast-setting");
+    const themeCheckbox = document.getElementById("dark-mode-setting");
+    const fontRangeSlider = document.getElementById("font-size-setting");
+    const fontDisplayLabel = document.getElementById("font-size-value");
+    const globalResetButton = document.getElementById("reset-settings-btn");
+
+    if (scanlineCheckbox) {
+        scanlineCheckbox.checked = StorageManager.get("scanlines", "true") === "true";
+        scanlineCheckbox.addEventListener("change", (e) => {
+            StorageManager.set("scanlines", e.target.checked);
+            refreshVisualState();
+        });
+    }
+
+    if (contrastCheckbox) {
+        contrastCheckbox.checked = StorageManager.get("highContrast", "false") === "true";
+        contrastCheckbox.addEventListener("change", (e) => {
+            StorageManager.set("highContrast", e.target.checked);
+            refreshVisualState();
+        });
+    }
+
+    if (themeCheckbox) {
+        themeCheckbox.checked = StorageManager.get("darkMode", "true") === "true";
+        themeCheckbox.addEventListener("change", (e) => {
+            StorageManager.set("darkMode", e.target.checked);
+            refreshVisualState();
+        });
+    }
+
+    if (fontRangeSlider) {
+        const activeScale = StorageManager.get("fontSize", "100");
+        fontRangeSlider.value = activeScale;
+        if (fontDisplayLabel) fontDisplayLabel.textContent = `${activeScale}%`;
+
+        fontRangeSlider.addEventListener("input", (e) => {
+            const scaleValue = e.target.value;
+            if (fontDisplayLabel) fontDisplayLabel.textContent = `${scaleValue}%`;
+            StorageManager.set("fontSize", scaleValue);
+            refreshVisualState();
+        });
+    }
+
+    if (globalResetButton) {
+        globalResetButton.addEventListener("click", () => {
+            if (confirm("Execute hard reset of all user preferences?")) {
+                StorageManager.delete("scanlines");
+                StorageManager.delete("highContrast");
+                StorageManager.delete("darkMode");
+                StorageManager.delete("fontSize");
+                location.reload(); 
+            }
+        });
+    }
+}
+
+// Map parameters and trigger logic
+document.addEventListener("DOMContentLoaded", () => {
+    refreshVisualState();
+    initSettingsInterface();
+});

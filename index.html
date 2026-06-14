@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? $pageTitle : 'Zombiz'; ?></title>
     <link rel="stylesheet" href="main.css">
-    
-    <script src="javascript/settings.js"></script>
+    <script src="javascript/layout.js" defer></script>
+    <script src="javascript/app.js" defer></script>
+    <script src="javascript/settings.js" defer></script>
+        
 </head>
 <body>
     <div id="scanlines" class="scanlines"></div>
@@ -20,9 +22,9 @@
     <div class="content">
         <div class="side">
             <ul style="font-size: 30px;">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="settings.php">Settings</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="settings.html">Settings</a></li>
             </ul>
         </div>
         <div class="main">
