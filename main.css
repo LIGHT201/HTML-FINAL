@@ -40,9 +40,145 @@ h1, h2, h3,p,li {
 }
 a {
     color: var(--link-color);
-    text-decoration: none;
+    ;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    color: var(--text-color);
 }
 
+/* Settings Page Styles */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.setting-item {
+    background-color: var(--ouline-striped-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--secondary-color);
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--link-color);
+}
+
+.setting-description {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #cccccc;
+}
+
+.settings-section {
+    border-left: 4px solid var(--link-color);
+    padding-left: 15px;
+    margin-bottom: 30px;
+}
+
+.settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: var(--link-color);
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    max-width: 300px;
+    height: 8px;
+    cursor: pointer;
+    accent-color: var(--link-color);
+    margin-top: 10px;
+}
+
+.reset-btn {
+    background-color: #8b0000;
+    color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+    background-color: #a00000;
+    transform: scale(1.05);
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    --primary-color: #000000;
+    --secondary-color: #ffff00;
+    --ouline-striped-color: #ffffff;
+    --link-color: #00ffff;
+    --text-color: #ffff00;
+    --checker-color-1: #000000;
+    --checker-color-2: #ffffff;
+}
+
+body.high-contrast table {
+    border: 3px solid var(--secondary-color);
+}
+
+body.high-contrast .setting-item {
+    border: 3px solid var(--secondary-color);
+    background-color: #000000;
+}
+
+/* Reduce Motion Mode */
+body.reduce-motion,
+body.reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+body.reduce-motion .scanlines {
+    animation: none !important;
+}
+
+body.reduce-motion .marq {
+    animation: none !important;
+}
+
+/* Light Mode (when dark mode is off) */
+body.light-mode {
+    --primary-color: #f5f5f5;
+    --secondary-color: #000000;
+    --ouline-striped-color: #e0e0e0;
+    --text-color: #000000;
+    --link-color: #0066cc;
+    --checker-color-1: #ffffff;
+    --checker-color-2: #cccccc;
+}
+
+body.light-mode table {
+    color: var(--text-color);
+}
+
+body.light-mode .setting-item {
+    background-color: var(--ouline-striped-color);
+    border-color: var(--secondary-color);
+}
 
 html body {
     
@@ -99,7 +235,7 @@ html body {
 
     border: var(--outline-size) solid var(--ouline-striped-color);
     border-radius: var(--border-radius);
-
+    overflow-y: auto;
 }
 .top {
     background-color: var(--primary-color);
@@ -107,17 +243,14 @@ html body {
     padding: 20px;
     
     height: 10vh;
-    width: 56vw; /*TODO: make the top bar stretch
-     from the left side to the end of the where the .main content ends.
-     (the .side bar is on the left and .main is to the right of while
-     the top is on the far left. (this should fit correctly and automatically.
-    */
+    width: calc(100px + 53.4vw);
     border: var(--outline-size) solid var(--ouline-striped-color);
     border-radius: var(--border-radius);
     
     display: flex;
     align-items: center;
     text-align: left;
+    box-sizing: border-box;
 }
 .topcontainer {
     display: flex;
@@ -135,7 +268,7 @@ html body {
     font-size: 20px;
     font-weight: bold;
     color: var(--secondary-color);
-    animation: marquee 5s linear infinite;
+    animation: marquee 42s linear infinite;
   
     
 }
@@ -146,4 +279,236 @@ html body {
 }
 .imgdec {
    position: fixed;
+}
+
+/* The scanline overlay container */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 9999;
+    pointer-events: none;
+    
+   
+    animation: move-scanlines 21s linear infinite, flicker 0.15s infinite;
+}
+
+
+@keyframes move-scanlines {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; } 
+}
+
+/* Existing flicker effect */
+@keyframes flicker {
+    0% { opacity: 0.97; }
+    50% { opacity: 1; }
+    100% { opacity: 0.98; }
+}
+
+/* Mobile and Tablet Responsive Design */
+
+/* Tablet devices (768px to 1024px) */
+@media (max-width: 1024px) {
+    .top {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+    
+    .content {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .side {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .side ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .side li {
+        list-style: none;
+    }
+    
+    .side li a {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: var(--ouline-striped-color);
+        border-radius: var(--border-radius);
+    }
+    
+    .main {
+        flex: 1;
+        height: auto;
+        padding: 15px;
+    }
+    
+    .logo {
+        width: 120px;
+    }
+    
+    .marq {
+        font-size: 16px;
+    }
+}
+
+/* Mobile devices (480px to 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+    
+    .top {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .logo {
+        width: 100px;
+        margin-bottom: 10px;
+    }
+    
+    .topcontainer {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .marq {
+        font-size: 14px;
+        animation: marquee 35s linear infinite;
+    }
+    
+    .content {
+        flex-direction: column;
+        min-height: auto;
+        padding: 0;
+    }
+    
+    .side {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: var(--outline-size) solid var(--ouline-striped-color);
+    }
+    
+    .side ul {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+    }
+    
+    .side li {
+        list-style: none;
+    }
+    
+    .side li a {
+        display: block;
+        padding: 12px;
+        background-color: var(--ouline-striped-color);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+    }
+    
+    .main {
+        flex: 1;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        border: var(--outline-size) solid var(--ouline-striped-color);
+    }
+    
+    h1, h2, h3 {
+        font-size: 24px;
+    }
+    
+    table {
+        font-size: 14px;
+        width: 100%;
+    }
+    
+    table th, table td {
+        padding: 10px 5px;
+    }
+}
+
+/* Small mobile devices (320px to 480px) */
+@media (max-width: 480px) {
+    html body {
+        --checker-size: 80px;
+    }
+    
+    .top {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .logo {
+        width: 80px;
+    }
+    
+    .topcontainer {
+        gap: 8px;
+    }
+    
+    .marq {
+        font-size: 12px;
+    }
+    
+    .side {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .side ul {
+        font-size: 16px;
+        gap: 8px;
+    }
+    
+    .main {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 20px;
+    }
+    
+    h2, h3 {
+        font-size: 18px;
+    }
+    
+    p {
+        font-size: 14px;
+    }
+    
+    table {
+        font-size: 12px;
+    }
+    
+    table th, table td {
+        padding: 8px 4px;
+    }
 }
