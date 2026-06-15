@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Share your thoughts and feedback about Zombiz.">
+    <title>Zombiz - Feedback</title>
+    
+    <link rel="stylesheet" href="main.css">
+    
+       <script src="javascript/layout.js" defer></script>
+    <script src="javascript/app.js" defer></script>
+    <script src="javascript/settings.js" defer></script>
+    <script src="javascript/feedback.js" defer></script>
+</head>
+<body>
+
+    <main class="main">
+        <h1>User Feedback Terminal</h1>
+        <p>Help us improve the Zombiz experience by sharing your thoughts below.</p>
+
+        <form id="feedback-form" class="retro-form">
+            <fieldset>
+                <legend>Website Survey</legend>
+                
+                <div class="form-group">
+                    <p>Did you enjoy your visit to Zombiz?</p>
+                    <label>
+                        <input type="radio" name="enjoyed" value="Yes" required> Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="enjoyed" value="No"> No
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="suggestions"><strong>What should we add next? (Required):</strong></label>
+                    <textarea 
+                        id="suggestions" 
+                        name="suggestions" 
+                        rows="6" 
+                        required 
+                        placeholder="Put feedback here..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send</button>
+            </fieldset>
+        </form>
+
+        <div id="feedback-response" class="response-box" style="display: none;"></div>
+    </main>
+
+</body>
+</html>

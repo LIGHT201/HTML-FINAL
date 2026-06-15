@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const header = document.createElement("header");
     header.className = "top";
     header.innerHTML = `
-        <img src="Assets/Zombiz Logo.png" alt="Zombiz Official Logo" class="logo" decoding="async">
+        <img src="Assets/Zombiz_Logo.png" alt="Zombiz Official Logo" class="logo" decoding="async">
         <div class="topcontainer">
             <div class="marq" role="marquee">NEWS BREAK: NEW WEBSITE CALLED "Zombiz" STRIKES, WEBSITE GOES LIVE, VISIT NOW!</div>
         </div>
@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <ul style="font-size: 30px;">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
+            <li><a href="feedback.html">Feedback</a></li>
+            <li><a href="gallary.html">Gallary</a></li>
             <li><a href="settings.html">Settings</a></li>
         </ul>
     `;
